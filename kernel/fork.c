@@ -353,7 +353,10 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
 	if (err)
 		goto free_ti;
 
+        tsk->flags &= ~PF_SU;
+
 	tsk->stack = ti;
+
 #ifdef CONFIG_SECCOMP
 	/*
 	 * We must handle setting up seccomp filters once we're under
