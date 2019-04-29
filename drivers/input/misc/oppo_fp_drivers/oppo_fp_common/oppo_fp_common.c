@@ -73,12 +73,6 @@ static char fp_manu[FP_ID_MAX_LENGTH] = CHIP_UNKNOWN; /* the length of this stri
 static struct fp_data *fp_data_ptr = NULL;
 char g_engineermode_menu_config[ENGINEER_MENU_SELECT_MAXLENTH] = ENGINEER_MENU_DEFAULT;
 
-//G_OPTICAL_95
-#if CONFIG_OPPO_FINGERPRINT_PROJCT == 18181 || CONFIG_OPPO_FINGERPRINT_PROJCT == 18385 || CONFIG_OPPO_FINGERPRINT_PROJCT == 18005 || CONFIG_OPPO_FINGERPRINT_PROJCT == 18323
-fp_module_config_t fp_module_config_list[] = {
-    {{1, 1, 0},  FP_SILEAD_OPTICAL_70,  CHIP_SILEAD,  ENGINEER_MENU_SILEAD_OPTICAL},
-};
-#else
 fp_module_config_t fp_module_config_list[] = {
     {{0, 0, 1},  FP_FPC_1023_GLASS,    	CHIP_FPC,     ENGINEER_MENU_FPC1023},
     {{0, 1, 0},  FP_FPC_1023,    		CHIP_FPC,     ENGINEER_MENU_FPC1023},//for EVT
@@ -87,9 +81,7 @@ fp_module_config_t fp_module_config_list[] = {
     {{1, 1, 1},  FP_GOODIX_OPTICAL_95, 	CHIP_GOODIX,  ENGINEER_MENU_GOODIX_OPTICAL},//add for T0
 
 };
-#endif
 
-#if CONFIG_OPPO_FINGERPRINT_PROJCT != 18181 && CONFIG_OPPO_FINGERPRINT_PROJCT != 18385 && CONFIG_OPPO_FINGERPRINT_PROJCT != 18005 && CONFIG_OPPO_FINGERPRINT_PROJCT != 18323
 static int fp_request_named_gpio(struct fp_data *fp_data,
         const char *label, int *gpio)
 {
@@ -113,7 +105,6 @@ static int fp_request_named_gpio(struct fp_data *fp_data,
     dev_info(dev, "%s - gpio: %d\n", label, *gpio);
     return FP_OK;
 }
-#endif
 
 static int fp_gpio_parse_dts(struct fp_data *fp_data)
 {
@@ -124,7 +115,6 @@ static int fp_gpio_parse_dts(struct fp_data *fp_data)
         goto exit;
     }
 
-#if CONFIG_OPPO_FINGERPRINT_PROJCT != 18181 && CONFIG_OPPO_FINGERPRINT_PROJCT != 18385 && CONFIG_OPPO_FINGERPRINT_PROJCT != 18005 && CONFIG_OPPO_FINGERPRINT_PROJCT != 18323
     ret = fp_request_named_gpio(fp_data, "oppo,fp-id1",
             &fp_data->gpio_id1);
     if (ret) {
@@ -145,7 +135,6 @@ static int fp_gpio_parse_dts(struct fp_data *fp_data)
         ret = FP_ERROR_GPIO;
         goto exit;
     }
-#endif
 
 exit:
     return ret;
@@ -267,15 +256,9 @@ static int fp_register_proc_fs(struct fp_data *fp_data)
 {
     uint32_t fp_id_retry;
     fp_id_retry = 0;
-#if CONFIG_OPPO_FINGERPRINT_PROJCT == 18181 || CONFIG_OPPO_FINGERPRINT_PROJCT == 18385 || CONFIG_OPPO_FINGERPRINT_PROJCT == 18005 || CONFIG_OPPO_FINGERPRINT_PROJCT == 18323
-    fp_data->fp_id1 = 1;
-    fp_data->fp_id2 = 1;
-    fp_data->fp_id3 = 0;
-#else
     fp_data->fp_id1 = gpio_get_value(fp_data->gpio_id1);
     fp_data->fp_id2 = gpio_get_value(fp_data->gpio_id2);
     fp_data->fp_id3 = gpio_get_value(fp_data->gpio_id3);
-#endif
     dev_err(fp_data->dev, "fp_register_proc_fs check: fp_id1= %d, fp_id2= %d, fp_id3= %d, fp_id_retry= %d\n", \
             fp_data->fp_id1, fp_data->fp_id2, fp_data->fp_id3, fp_id_retry);
 
