@@ -893,5 +893,4 @@ struct kgsl_pwr_limit {
 	unsigned int level;
 	struct kgsl_device *device;
 };
-
 #endif  /* __KGSL_DEVICE_H */

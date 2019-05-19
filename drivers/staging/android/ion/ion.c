@@ -42,7 +42,6 @@
 #include <linux/msm_dma_iommu_mapping.h>
 #include <trace/events/kmem.h>
 
-
 #include "ion.h"
 #include "ion_priv.h"
 #include "compat_ion.h"
@@ -2183,3 +2182,4 @@ void __init ion_reserve(struct ion_platform_data *data)
 			data->heaps[i].size);
 	}
 }
+

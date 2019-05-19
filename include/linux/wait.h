@@ -208,7 +208,6 @@ wait_queue_head_t *bit_waitqueue(void *, int);
  * on purpose; we use long where we can return timeout values and int
  * otherwise.
  */
-
 #define ___wait_event(wq, condition, state, exclusive, ret, cmd)	\
 ({									\
 	__label__ __out;						\
@@ -242,6 +241,7 @@ wait_queue_head_t *bit_waitqueue(void *, int);
 	finish_wait(&wq, &__wait);					\
 __out:	__ret;								\
 })
+//#endif
 
 #define __wait_event(wq, condition)					\
 	(void)___wait_event(wq, condition, TASK_UNINTERRUPTIBLE, 0, 0,	\

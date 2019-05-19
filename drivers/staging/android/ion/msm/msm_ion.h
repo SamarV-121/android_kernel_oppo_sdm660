@@ -135,8 +135,6 @@ struct ion_client *msm_ion_client_create(const char *name);
 int ion_handle_get_flags(struct ion_client *client, struct ion_handle *handle,
 				unsigned long *flags);
 
-
-
 /**
  * ion_handle_get_size - get the allocated size of a given handle
  *

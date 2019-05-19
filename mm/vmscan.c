@@ -144,9 +144,10 @@ struct scan_control {
 #endif
 
 /*
- * From 0 .. 100.  Higher means more swappy.
+ * From 0 .. 200.  Higher means more swappy.
  */
 int vm_swappiness = 60;
+
 /*
  * The total number of pages which are beyond the high watermark within all
  * zones.
@@ -470,7 +471,6 @@ static unsigned long shrink_slab(gfp_t gfp_mask, int nid,
 
 	if (nr_scanned == 0)
 		nr_scanned = SWAP_CLUSTER_MAX;
-
 	if (!down_read_trylock(&shrinker_rwsem)) {
 		/*
 		 * If we would return 0, our callers would understand that we
@@ -1244,7 +1244,7 @@ static unsigned long shrink_page_list(struct list_head *page_list,
 		 * we obviously don't have to worry about waking up a process
 		 * waiting on the page lock, because there are no references.
 		 */
-		__clear_page_locked(page);
+		__ClearPageLocked(page);
 free_it:
 		nr_reclaimed++;
 
@@ -1319,7 +1319,6 @@ unsigned long reclaim_clean_pages_from_list(struct zone *zone,
 			list_move(&page->lru, &clean_pages);
 		}
 	}
-
 	ret = shrink_page_list(&clean_pages, zone, &sc,
 			TTU_UNMAP|TTU_IGNORE_ACCESS,
 			&dummy1, &dummy2, &dummy3, &dummy4, &dummy5, true);
@@ -1828,13 +1827,14 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
 	 */
 	if (!sc->hibernation_mode && !current_is_kswapd() &&
 	    current_may_throttle())
-		wait_iff_congested(zone, BLK_RW_ASYNC, HZ/10);
+               wait_iff_congested(zone, BLK_RW_ASYNC, HZ/10);
 
-	trace_mm_vmscan_lru_shrink_inactive(zone->zone_pgdat->node_id,
-		zone_idx(zone),
-		nr_scanned, nr_reclaimed,
-		sc->priority,
-		trace_shrink_flags(file));
+       trace_mm_vmscan_lru_shrink_inactive(zone->zone_pgdat->node_id,
+               zone_idx(zone),
+               nr_scanned, nr_reclaimed,
+               sc->priority,
+               trace_shrink_flags(file));
+
 	return nr_reclaimed;
 }
 
@@ -2010,7 +2010,6 @@ static bool inactive_anon_is_low_global(struct zone *zone)
 
 	active = zone_page_state(zone, NR_ACTIVE_ANON);
 	inactive = zone_page_state(zone, NR_INACTIVE_ANON);
-
 	return inactive * zone->inactive_ratio < active;
 }
 

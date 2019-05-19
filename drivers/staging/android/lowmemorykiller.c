@@ -49,7 +49,6 @@
 #include <linux/cpuset.h>
 #include <linux/vmpressure.h>
 #include <linux/zcache.h>
-
 #define CREATE_TRACE_POINTS
 #include <trace/events/almk.h>
 
@@ -137,9 +136,8 @@ int adjust_minadj(short *min_score_adj)
 		else
 			ret = VMPRESSURE_ADJUST_NORMAL;
 		*min_score_adj = adj_max_shift;
+		atomic_set(&shift_adj, 0);
 	}
-	atomic_set(&shift_adj, 0);
-
 	return ret;
 }
 
@@ -537,6 +535,7 @@ static unsigned long lowmem_scan(struct shrinker *s, struct shrink_control *sc)
 		cache_limit = minfree * (long)(PAGE_SIZE / 1024);
 		free = other_free * (long)(PAGE_SIZE / 1024);
 		trace_lowmemory_kill(selected, cache_size, cache_limit, free);
+
 		lowmem_print(1, "Killing '%s' (%d), adj %hd,\n" \
 			        "   to free %ldkB on behalf of '%s' (%d) because\n" \
 			        "   cache %ldkB is below limit %ldkB for oom_score_adj %hd\n" \

@@ -2325,7 +2325,6 @@ static void sock_def_error_report(struct sock *sk)
 static void sock_def_readable(struct sock *sk)
 {
 	struct socket_wq *wq;
-
 	rcu_read_lock();
 	wq = rcu_dereference(sk->sk_wq);
 	if (wq_has_sleeper(wq))
