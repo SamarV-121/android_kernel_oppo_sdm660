@@ -135,4 +135,8 @@ config ICMP_DISABLE_PS
 config BUILD_TIMESTAMP
 	bool "Embed timestamp in wlan version"
 	default n
+
+config WLAN_FEATURE_FILS
+	bool "Enable FILS Feature"
+	default n
 endif # QCA_CLD_WLAN
